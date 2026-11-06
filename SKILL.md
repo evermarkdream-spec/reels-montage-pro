@@ -19,6 +19,8 @@ Run `python scripts/bootstrap.py NEW_PROJECT_FOLDER` from this skill folder. It 
 
 Keep one project per student, versioned compositions per video. No access to the original author's computer, paths, identity, source footage or voice clone is required. The optional example MP4 is a visual reference only.
 
+When invoked immediately after installation, take ownership of onboarding. Read the required files, create or locate the student's working project, run the safe environment checks and explain only a concrete blocker. If no source video is available, ask the student in one short message to attach or point to their video; optionally mention that they may also attach reference videos, screenshots and exact spellings. Do not require the student to repeat this skill's workflow, style specification, deliverables or technical commands. Once the source is available, proceed through the complete editing sequence autonomously until the first reviewable MP4 and editable project are ready.
+
 ## Editing sequence
 
 1. Inspect orientation, fps, duration, speech and face framing. Preserve source bytes. If several files could be the intended source, resolve which one to edit.
