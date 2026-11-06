@@ -1,0 +1,12 @@
+node_modules/
+.venv*/
+.models/
+.tools/
+out/
+public/projects/
+src/generated/
+src/local/
+.env
+.env.*
+__pycache__/
+*.pyc

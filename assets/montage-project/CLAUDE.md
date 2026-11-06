@@ -1,0 +1,1 @@
+Read AGENTS.md in this folder and follow its editing workflow, project rules and checks. It is the shared entrypoint for Codex and Claude Code. Before a new video, read the active STYLE_PROFILE.md when present. Preserve existing compositions and source media.

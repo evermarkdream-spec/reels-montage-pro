@@ -1,0 +1,1 @@
+Read SKILL.md and its required references before editing video. For installation from this repository, follow README.md and references/INSTALLATION.md. Create a separate student project with scripts/bootstrap.py; do not edit source footage or turn the bundled template into a student's working directory.

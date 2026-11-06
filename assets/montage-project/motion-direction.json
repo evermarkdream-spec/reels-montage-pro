@@ -1,0 +1,35 @@
+{
+  "selection": "by-current-script-meaning",
+  "copyScenesAcrossVideos": false,
+  "scenePlanRequired": [
+    "spokenPhrase",
+    "viewerTakeaway",
+    "object",
+    "action",
+    "result",
+    "beats",
+    "assets",
+    "layout"
+  ],
+  "beatSpacingSeconds": [0.5, 1.0],
+  "allowReadingHold": true,
+  "background": {
+    "grid": false,
+    "centerGlow": true,
+    "preferredTheme": "latest-ref-light"
+  },
+  "typography": {
+    "family": "Onest",
+    "headlineFamily": "Unbounded",
+    "localFonts": true
+  },
+  "palette": "cream/lilac/black/lime; latestRef tokens",
+  "fallback": "camera-with-motivated-zoom",
+  "sound": { "trigger": "meaningful-action-only", "voicePriority": true },
+  "cta": "only-from-source-or-explicit-student-request",
+  "objectContinuity": true,
+  "resultAfterAction": true,
+  "onePrimaryActionAtATime": true,
+  "sceneOpening": "show-the-main-object-immediately; no empty first half-second while speech continues",
+  "depthHook": "optional; calculate occlusion from the current source and actual camera transform; never reuse the reference matte"
+}
