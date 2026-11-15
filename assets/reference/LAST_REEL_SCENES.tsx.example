@@ -1,23 +1,24 @@
 import React from "react";
-import { Interactive } from "remotion";
+import { Interactive, staticFile } from "remotion";
+import { Video } from "@remotion/media";
 import {
-  UserRound,
-  Play,
-  Mic,
-  FileText,
-  Captions,
-  Layers,
-  Check,
+  Bot,
+  Mail,
   Send,
-  Paperclip,
+  Check,
+  ListChecks,
+  Receipt,
+  Folder,
+  FileText,
+  Scissors,
+  Captions,
+  Volume2,
+  Play,
+  Upload,
   Sparkles,
-  FolderOpen,
   MessageCircle,
-  ArrowRight,
-  LockKeyhole,
-  Film,
-  LayoutGrid,
-  CheckCheck,
+  CreditCard,
+  Landmark,
 } from "lucide-react";
 import { latestRef as r, cinemaNov as c } from "../../scenes/tokens";
 import {
@@ -25,1002 +26,1227 @@ import {
   Heading,
   WindowBar,
   Pointer,
-  Typed,
   Done,
+  Typed,
   time,
   ease,
   linear,
   surface,
 } from "./MotionNovKit";
+import { FutureMotionTypewriter } from "./FutureMotionNov";
+import botPoints from "./particleBotPoints.json";
+
 const abs: React.CSSProperties = { position: "absolute" };
-const panel = { ...surface, boxShadow: c.objectShadow };
+const source = "projects/YOUR_VIDEO/source.mp4";
+const panel: React.CSSProperties = { ...surface, boxShadow: c.objectShadow };
+const ramp = (t: number, a: number, b: number) => ease(t, a, b);
 const mix = (a: number, b: number, q: number) => a + (b - a) * q;
-const enter = (t: number, a: number) => ({
-  opacity: ease(t, a, a + 0.35),
-  transform: `translateY(${25 * (1 - ease(t, a, a + 0.45))}px)`,
-});
-const Wave = ({ t }: { t: number }) => (
-  <svg viewBox="0 0 400 50" width="100%" height={50}>
-    {Array.from({ length: 60 }, (_, i) => {
-      const h = 6 + 32 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.28));
-      return (
-        <rect
-          key={i}
-          x={i * 6.6}
-          y={(50 - h) / 2}
-          width={3.4}
-          height={h}
-          rx={2}
-          fill={i / 60 < linear(t, 0, 2) ? r.purple : r.line}
-        />
-      );
-    })}
+const Footage = () => (
+  <Video
+    src={staticFile(source)}
+    muted
+    objectFit="cover"
+    trimBefore={520}
+    style={{ width: "100%", height: "100%" }}
+  />
+);
+
+const Particles = ({ t }: { t: number }) => {
+  const gather = ramp(t, 0.25, 1.15);
+  return (
+    <svg
+      width={888}
+      height={800}
+      style={{ ...abs, opacity: 1 - ramp(t, 1.55, 1.9), pointerEvents: "none" }}
+    >
+      {Array.from({ length: 240 }, (_, i) => {
+        const a = i * 2.399963,
+          rr = 85 + ((i * 41) % 190);
+        const size = mix(5.8, 76 / 24, ramp(t, 1.15, 1.7));
+        const tx = 444 + (botPoints[i][0] - 12) * size;
+        const ty = 475 + (botPoints[i][1] - 12) * size;
+        const x = mix(444 + Math.cos(a + t * 0.35) * rr, tx, gather);
+        const y = mix(455 + Math.sin(a + t * 0.35) * rr * 0.65, ty, gather);
+        return (
+          <circle
+            key={i}
+            cx={x}
+            cy={y}
+            r={1.8 + (i % 3) * 0.5}
+            fill={i % 6 === 0 ? r.ink : r.purple}
+            opacity={0.3 + 0.7 * ramp(t, 0, 0.5)}
+          />
+        );
+      })}
+    </svg>
+  );
+};
+
+const Rail = ({ d, t, at }: { d: string; t: number; at: number }) => (
+  <svg
+    width={888}
+    height={800}
+    style={{ ...abs, inset: 0, pointerEvents: "none" }}
+  >
+    <path d={d} fill="none" stroke={r.line} strokeWidth={3} />
+    <path
+      d={d}
+      fill="none"
+      stroke={r.purple}
+      strokeWidth={4}
+      pathLength={1}
+      strokeDasharray={1}
+      strokeDashoffset={1 - ramp(t, at, at + 0.6)}
+      strokeLinecap="round"
+    />
   </svg>
 );
-const VideoObject = ({ small = false }: { small?: boolean }) => (
-  <div
-    style={{
-      width: "100%",
-      height: "100%",
-      background: r.lilac,
-      borderRadius: 18,
-      overflow: "hidden",
-      position: "relative",
-      display: "grid",
-      placeItems: "center",
-    }}
-  >
-    <UserRound size={small ? 45 : 110} strokeWidth={1.1} color={r.purple} />
+
+const MiniMail = ({ t }: { t: number }) => (
+  <>
+    <div style={{ fontSize: 23, color: r.muted, marginBottom: 14 }}>
+      Когда будет готов проект?
+    </div>
+    <div
+      style={{
+        background: r.lilac,
+        padding: 18,
+        borderRadius: 16,
+        fontSize: 29,
+        lineHeight: 1.25,
+        transform: `translateY(${-16 * ramp(t, 0.65, 1)}px)`,
+        opacity: 1 - ramp(t, 0.65, 1),
+      }}
+    >
+      <Typed text="Отправлю сегодня." t={t} start={0} end={0.5} />
+    </div>
     <div
       style={{
         ...abs,
-        bottom: 12,
-        left: 12,
-        right: 12,
+        left: 24,
+        right: 24,
+        top: 135,
+        fontSize: 26,
         display: "flex",
         alignItems: "center",
-        gap: 10,
+        gap: 12,
+        opacity: ramp(t, 0.8, 1.05),
       }}
     >
-      <Play size={small ? 16 : 26} fill={r.ink} />
-      <div style={{ height: 3, background: r.purple, flex: 1 }} />
-    </div>
-  </div>
-);
-const slideCopy = [
-  ["ПРОВЕРЬ", "ТЕКСТ"],
-  ["УБЕРИ", "ОБЩИЕ ФРАЗЫ"],
-  ["СОХРАНИ", "ГЛАВНУЮ МЫСЛЬ"],
-  ["ОФОРМИ", "СЛАЙДЫ"],
-  ["ПОКАЖИ", "АВТОРУ"],
-];
-const Slide = ({ i = 0, mini = false }: { i?: number; mini?: boolean }) => (
-  <div
-    style={{
-      width: "100%",
-      height: "100%",
-      background: i % 2 ? r.lilac : r.paper,
-      borderRadius: 14,
-      border: `2px solid ${r.line}`,
-      boxSizing: "border-box",
-      padding: mini ? 10 : 25,
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-between",
-      overflow: "hidden",
-    }}
-  >
-    <span style={{ fontSize: mini ? 13 : 22, color: r.muted }}>{i + 1}/5</span>
-    <div
-      style={{
-        fontFamily: r.titleFont,
-        fontSize: mini ? 10 : 28,
-        lineHeight: 1.3,
-        fontWeight: 900,
-      }}
-    >
-      {slideCopy[i][0]}
-      <br />
-      <span style={{ background: i === 0 ? r.lime : "transparent" }}>
-        {slideCopy[i][1]}
-      </span>
+      <Check color={r.purple} size={29} />
+      Ответ отправлен
     </div>
     <div
       style={{
-        alignSelf: "flex-end",
-        padding: 8,
-        borderRadius: 50,
+        ...abs,
+        right: 25,
+        bottom: 22,
         background: r.lime,
+        borderRadius: 14,
+        padding: "10px 18px",
+        opacity: 1 - ramp(t, 0.8, 1),
       }}
     >
-      <ArrowRight size={mini ? 14 : 25} />
+      <Send size={26} />
     </div>
-  </div>
+    <Pointer x={315} y={178} t={t} at={0.65} />
+  </>
 );
 
-export const FirstOrderProspects = () => {
-  const t = time(),
-    pick = ease(t, 2.25, 2.8);
-  return (
-    <Stage>
-      <Heading>НАЙТИ СВОИХ ЭКСПЕРТОВ</Heading>
-      {Array.from({ length: 10 }, (_, i) => {
-        const q = ease(t, (i % 5) * 0.05, (i % 5) * 0.05 + 0.3),
-          chosen = i === 6;
-        return (
-          <Interactive.Div
-            key={i}
-            name={`Разговорное видео ${i + 1}`}
+const MiniTasks = ({ t }: { t: number }) => (
+  <>
+    {["Ответить клиенту", "Собрать материалы", "Подготовить пост"].map(
+      (s, i) => (
+        <div
+          key={s}
+          style={{
+            display: "flex",
+            gap: 12,
+            alignItems: "center",
+            marginBottom: 13,
+            fontSize: 25,
+            opacity: ramp(t, i * 0.14, i * 0.14 + 0.25),
+            transform: `translateX(${25 * (1 - ramp(t, i * 0.14, i * 0.14 + 0.4))}px)`,
+          }}
+        >
+          <div
             style={{
-              ...abs,
-              left: 40 + (i % 5) * 164,
-              top: 260 + Math.floor(i / 5) * 225,
-              width: 148,
-              height: 190,
-              ...panel,
-              padding: 10,
-              opacity: q * (chosen ? 1 : 1 - 0.55 * pick),
-              transform: `perspective(1400px) rotateY(${((i % 5) - 2) * -4 * (1 - pick)}deg) translateY(${30 * (1 - q)}px) scale(${chosen ? 1 + 0.12 * pick : 1 - 0.04 * pick})`,
-              borderColor: chosen && pick > 0.5 ? r.purple : r.line,
-              zIndex: chosen ? 3 : 1,
+              width: 26,
+              height: 26,
+              flexShrink: 0,
+              borderRadius: 8,
+              background: t > 0.55 + i * 0.2 ? r.lime : r.paper,
+              border: `2px solid ${r.line}`,
             }}
           >
-            <VideoObject small />
+            {t > 0.55 + i * 0.2 && <Check size={22} />}
+          </div>
+          {s}
+        </div>
+      ),
+    )}
+  </>
+);
+
+const MiniFinance = ({ t }: { t: number }) => (
+  <>
+    <div
+      style={{
+        ...abs,
+        left: 200,
+        top: 108,
+        width: 150,
+        height: 100,
+        background: r.lilac,
+        borderRadius: 16,
+        border: `2px solid ${r.purple}`,
+        display: "grid",
+        placeItems: "center",
+      }}
+    >
+      <Folder size={54} color={r.purple} />
+    </div>
+    {[0, 1, 2].map((i) => {
+      const q = ramp(t, i * 0.2, i * 0.2 + 0.65);
+      return (
+        <div
+          key={i}
+          style={{
+            ...abs,
+            left: 32 + i * 10 + q * 195,
+            top: 110 + i * 13 - q * 10,
+            transform: `rotate(${(-10 + i * 10) * (1 - q)}deg) scale(${1 - q * 0.55})`,
+            opacity: 1 - ramp(t, i * 0.2 + 0.5, i * 0.2 + 0.75),
+            background: r.white,
+            border: `2px solid ${r.line}`,
+            padding: 12,
+            borderRadius: 8,
+          }}
+        >
+          <Receipt size={48} color={r.purple} />
+        </div>
+      );
+    })}
+    <div
+      style={{
+        ...abs,
+        left: 25,
+        top: 105,
+        fontSize: 27,
+        width: 145,
+        opacity: ramp(t, 0.9, 1.15),
+      }}
+    >
+      Расходы
+      <br />
+      разобраны
+    </div>
+    <div
+      style={{
+        ...abs,
+        left: 300,
+        top: 170,
+        opacity: ramp(t, 1, 1.2),
+        background: r.lime,
+        borderRadius: 50,
+        padding: 6,
+      }}
+    >
+      <Check size={26} />
+    </div>
+  </>
+);
+
+export const FutureCinemaAgents = () => {
+  const t = time();
+  const spread = ramp(t, 2.6, 3.8),
+    work = ramp(t, 4.8, 5.15),
+    summary = ramp(t, 9.55, 10.35);
+  const tabs = [
+    { Icon: Mail, label: "Переписка", at: 5.12 },
+    { Icon: ListChecks, label: "Задачи", at: 6.42 },
+    { Icon: Receipt, label: "Финансы", at: 7.94 },
+  ];
+  const active = t < 6.42 ? 0 : t < 7.94 ? 1 : 2;
+  return (
+    <Stage>
+      <Heading>ОДИН → КОМАНДА</Heading>
+      <Particles t={t} />
+      <div style={{ opacity: spread * (1 - work + summary) }}>
+        <Rail d="M444 320 C444 365 165 335 165 420" t={t} at={3} />
+        <Rail d="M444 320 L444 420" t={t} at={3.2} />
+        <Rail d="M444 320 C444 365 723 335 723 420" t={t} at={3.4} />
+      </div>
+      <Interactive.Div
+        name="Агент собирается из частиц"
+        style={{
+          ...abs,
+          left: 354 - 240 * work * (1 - summary),
+          top: mix(400, 170, spread) + 90 * work * (1 - summary),
+          width: 180,
+          height: 150,
+          ...panel,
+          background: r.lilac,
+          display: "grid",
+          placeItems: "center",
+          opacity: ramp(t, 1.2, 1.6),
+          transform: `perspective(${c.perspective}px) rotateY(${-12 * work * (1 - summary)}deg) scale(${0.82 + 0.18 * ramp(t, 1.2, 1.8)})`,
+        }}
+      >
+        <Bot size={76} strokeWidth={1.7} color={r.purple} />
+      </Interactive.Div>
+      {tabs.map(({ Icon, label, at }, i) => {
+        const focus = work * (1 - summary),
+          on = active === i;
+        const selected =
+          ramp(t, i === 0 ? 4.8 : at - 0.2, at + 0.12) *
+          (i < 2
+            ? 1 - ramp(t, tabs[i + 1].at - 0.2, tabs[i + 1].at + 0.12)
+            : 1);
+        const focused = focus * selected;
+        const x = mix(55 + i * 278, mix(75 + i * 30, 335, selected), focus);
+        const y = mix(420, mix(475 + i * 35, 245, selected), focus);
+        const appear = ramp(t, 2.85 + i * 0.25, 3.35 + i * 0.25);
+        return (
+          <Interactive.Div
+            key={label}
+            name={`Окно ${label} — действие и результат`}
+            style={{
+              ...abs,
+              left: x,
+              top: y,
+              width: mix(222, 450, focused),
+              height: mix(185, 300, focused),
+              ...panel,
+              zIndex: on ? 4 : 2,
+              opacity: appear * (1 - 0.55 * focus * (1 - selected)),
+              transform: `perspective(${c.perspective}px) rotateY(${(i - 1) * -9 * (1 - focus)}deg) translateY(${35 * (1 - appear)}px) scale(${1 - 0.32 * focus * (1 - selected)})`,
+              transformOrigin: "center center",
+              filter: `blur(${1.5 * focus * (1 - selected)}px)`,
+              overflow: "hidden",
+            }}
+          >
             <div
               style={{
-                ...abs,
-                top: 9,
-                right: 9,
-                background: r.lime,
-                borderRadius: 20,
-                padding: 4,
-                opacity: chosen ? pick : 0,
+                padding: "19px 20px",
+                fontSize: 25,
+                display: "flex",
+                gap: 12,
+                alignItems: "center",
+                borderBottom: `1px solid ${r.line}`,
+                background: t > at ? r.lilac : r.white,
               }}
             >
-              <Check size={18} />
+              <Icon size={29} color={r.purple} />
+              {label}
             </div>
+            {focus > 0.9 && on ? (
+              <div style={{ padding: 24 }}>
+                {i === 0 ? (
+                  <MiniMail t={t - at} />
+                ) : i === 1 ? (
+                  <MiniTasks t={t - at} />
+                ) : (
+                  <MiniFinance t={t - at} />
+                )}
+              </div>
+            ) : (
+              <div
+                style={{
+                  padding: 23,
+                  display: "grid",
+                  placeItems: "center",
+                  height: 75,
+                }}
+              >
+                {summary > 0.3 ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 8,
+                      fontSize: 21,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Check size={25} color={r.purple} />
+                    {["Отправлено", "План готов", "Разобрано"][i]}
+                  </div>
+                ) : (
+                  <Icon size={46} strokeWidth={1.3} color={r.purple} />
+                )}
+              </div>
+            )}
           </Interactive.Div>
         );
       })}
-      <Pointer x={292} y={580} t={t} at={2.35} />
+      <Interactive.Div
+        name="Включение команды"
+        style={{
+          ...abs,
+          left: 294,
+          top: 660,
+          width: 300,
+          height: 65,
+          borderRadius: 40,
+          background: r.ink,
+          color: r.white,
+          display: "flex",
+          gap: 18,
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: ramp(t, 10.4, 10.8),
+          transform: `translateY(${18 * (1 - ramp(t, 10.4, 10.8))}px)`,
+        }}
+      >
+        <span style={{ fontSize: 25 }}>Моя команда</span>
+        <div
+          style={{
+            width: 64,
+            height: 32,
+            borderRadius: 20,
+            background: t > 11.2 ? r.lime : r.muted,
+          }}
+        >
+          <div
+            style={{
+              margin: 4,
+              width: 24,
+              height: 24,
+              borderRadius: 20,
+              background: r.white,
+              transform: `translateX(${32 * ramp(t, 11.2, 11.5)}px)`,
+            }}
+          />
+        </div>
+        <Pointer x={245} y={20} t={t} at={11.2} />
+      </Interactive.Div>
+      <svg
+        width={888}
+        height={800}
+        style={{ ...abs, pointerEvents: "none", opacity: summary }}
+      >
+        {[0, 1, 2].map((i) => (
+          <circle
+            key={i}
+            cx={165 + i * 278}
+            cy={420 - 64 * ramp(t, 11.6 + i * 0.35, 12.3 + i * 0.35)}
+            r={6}
+            fill={r.purple}
+            opacity={
+              ramp(t, 11.6 + i * 0.35, 11.8 + i * 0.35) *
+              (1 - ramp(t, 12.1 + i * 0.35, 12.4 + i * 0.35))
+            }
+          />
+        ))}
+      </svg>
     </Stage>
   );
 };
 
-export const FirstOrderRepurpose = () => {
+export const FutureCinemaBank = () => {
   const t = time(),
-    split = ease(t, 0.5, 1.4),
-    fan = ease(t, 2.6, 3.6),
-    together = ease(t, 4.5, 5.5);
+    q = ramp(t, 1.2, 2.5),
+    atm = ramp(t, 3.8, 4.3);
   return (
     <Stage>
-      <Heading>ОДНО ВИДЕО → ДВА ФОРМАТА</Heading>
+      <Heading>БАНК В ТЕЛЕФОНЕ</Heading>
       <Interactive.Div
-        name="Исходное разговорное видео"
+        name="Отделение — пространственная модель"
         style={{
           ...abs,
-          left: mix(304, 60, split),
-          top: mix(270, 330, split),
-          width: 250,
+          left: 75 - q * 25,
+          top: 250 + q * 100,
+          width: 300,
           height: 300,
           ...panel,
-          padding: 12,
-          transform: `perspective(1400px) rotateY(${-12 * split}deg) scale(${1 - 0.12 * together})`,
+          background: r.lilac,
+          transform: `perspective(1400px) rotateY(${-20 * q}deg) scale(${1 - 0.22 * q})`,
+          opacity: 1 - 0.65 * q,
         }}
       >
-        <VideoObject />
-      </Interactive.Div>
-      <svg width={888} height={800} style={{ ...abs, inset: 0 }}>
-        <path
-          d="M305 480 C360 480 350 330 420 330 M305 480 C360 480 350 595 420 595"
-          fill="none"
-          stroke={r.purple}
-          strokeWidth={4}
-          pathLength={1}
-          strokeDasharray={1}
-          strokeDashoffset={1 - ease(t, 1.1, 1.8)}
+        <Landmark
+          size={150}
+          strokeWidth={1.2}
+          color={r.purple}
+          style={{ margin: "30px 75px" }}
         />
-      </svg>
-      <Interactive.Div
-        name="Короткий сценарий Reels"
-        style={{
-          ...abs,
-          left: 420,
-          top: 210,
-          width: 365,
-          height: 205,
-          ...panel,
-          padding: 24,
-          ...enter(t, 1.4),
-        }}
-      >
-        <div style={{ display: "flex", gap: 12, fontSize: 27 }}>
-          <Film color={r.purple} />
-          Reels
-        </div>
-        <div style={{ fontSize: 28, lineHeight: 1.3, marginTop: 20 }}>
-          <Typed
-            text="Одна мысль. Короткий сценарий."
-            t={t}
-            start={1.7}
-            end={2.7}
-          />
-        </div>
-      </Interactive.Div>
-      {[4, 3, 2, 1, 0].map((i) => (
-        <Interactive.Div
-          key={i}
-          name={`Карусель — слайд ${i + 1}`}
-          style={{
-            ...abs,
-            left: 425 + i * 35 * fan,
-            top: 455 + Math.abs(i - 2) * 6,
-            width: 190,
-            height: 230,
-            ...panel,
-            opacity: ease(t, 2.6 + i * 0.1, 3 + i * 0.1),
-            transform: `rotate(${(i - 2) * 6 * fan}deg) translateY(${-12 * together}px)`,
-            transformOrigin: "bottom center",
-          }}
-        >
-          <Slide i={i} mini />
-        </Interactive.Div>
-      ))}
-      <div
-        style={{
-          ...abs,
-          left: 420,
-          top: 715,
-          fontSize: 26,
-          display: "flex",
-          gap: 12,
-          alignItems: "center",
-          opacity: ease(t, 4.5, 4.9),
-        }}
-      >
-        <Check color={r.purple} />
-        Готовый пример работы
-      </div>
-    </Stage>
-  );
-};
-
-export const FirstOrderTranscript = () => {
-  const t = time(),
-    text = ease(t, 0.8, 1.8),
-    upload = ease(t, 2.5, 3.45);
-  return (
-    <Stage>
-      <Heading>РЕЧЬ → ТЕКСТ → ИИ</Heading>
-      <Interactive.Div
-        name="Речь становится документом"
-        style={{
-          ...abs,
-          left: mix(75, 200, upload),
-          top: mix(415, 205, upload),
-          width: mix(738, 488, upload),
-          height: mix(330, 245, upload),
-          ...panel,
-          padding: 30,
-          transform: `perspective(1300px) rotateY(${-9 * upload}deg) scale(${1 - 0.15 * upload})`,
-        }}
-      >
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 14,
-            fontSize: 27,
+            margin: "5px 25px",
+            borderTop: `5px solid ${r.purple}`,
+            padding: 18,
+            fontSize: 29,
+            textAlign: "center",
           }}
         >
-          {text < 0.6 ? (
-            <Mic color={r.purple} />
-          ) : (
-            <FileText color={r.purple} />
-          )}
-          Текст из видео
-        </div>
-        <div
-          style={{
-            opacity: 1 - text,
-            position: "absolute",
-            left: 30,
-            right: 30,
-            top: 130,
-          }}
-        >
-          <Wave t={t} />
-        </div>
-        <div
-          style={{
-            fontSize: 30,
-            lineHeight: 1.4,
-            marginTop: 25,
-            opacity: text,
-          }}
-        >
-          <Typed
-            text="Из одного видео можно сделать Reels и пост-карусель."
-            t={t}
-            start={0.8}
-            end={2.3}
-          />
+          Отделение
         </div>
       </Interactive.Div>
       <Interactive.Div
-        name="Документ прикреплён к запросу"
+        name="Приложение приближается — перевод"
         style={{
           ...abs,
-          left: 80,
-          top: 505,
-          width: 728,
-          height: 185,
-          ...panel,
-          padding: 26,
-          opacity: upload,
-          transform: `translateY(${45 * (1 - upload)}px)`,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            gap: 12,
-            alignItems: "center",
-            fontSize: 25,
-            color: r.muted,
-          }}
-        >
-          <Sparkles color={r.purple} />
-          Рабочий проект
-        </div>
-        <div
-          style={{
-            marginTop: 22,
-            display: "flex",
-            gap: 12,
-            alignItems: "center",
-            background: r.lilac,
-            borderRadius: 12,
-            padding: 15,
-            fontSize: 26,
-          }}
-        >
-          <Paperclip size={24} />
-          Текст видео
-          <Check color={r.purple} style={{ marginLeft: "auto" }} />
-        </div>
-      </Interactive.Div>
-    </Stage>
-  );
-};
-
-export const FirstOrderPrompt = () => {
-  const t = time();
-  return (
-    <Stage>
-      <Heading>ЗАПРОС С ЧЁТКОЙ ЗАДАЧЕЙ</Heading>
-      <Interactive.Div
-        name="Набор запроса по речи"
-        style={{
-          ...abs,
-          left: 60,
-          top: 205,
-          width: 768,
-          height: 510,
-          ...panel,
+          left: 460 - 70 * q,
+          top: 185,
+          width: 285,
+          height: 520,
+          border: `10px solid ${r.ink}`,
+          borderRadius: 44,
+          boxShadow: c.objectShadow,
+          background: r.white,
           overflow: "hidden",
-          transform: `perspective(1600px) rotateY(${3 * (1 - ease(t, 0, 1))}deg)`,
+          transform: `perspective(1400px) rotateY(${17 * (1 - q)}deg) translateY(${65 * (1 - ramp(t, 0.15, 0.8))}px)`,
         }}
       >
-        <WindowBar
-          label="Рабочий проект"
-          icon={<Sparkles size={26} color={r.purple} />}
-        />
         <div
           style={{
-            padding: "20px 26px",
-            fontSize: 23,
-            color: r.muted,
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
+            width: 94,
+            height: 17,
+            background: r.ink,
+            margin: "0 auto",
+            borderRadius: "0 0 12px 12px",
+          }}
+        />
+        <div style={{ padding: 23, fontSize: 28 }}>
+          <div style={{ margin: "20px 0 25px" }}>Перевод</div>
+          <div
+            style={{
+              background: r.lilac,
+              padding: 20,
+              borderRadius: 16,
+              boxShadow: c.contactShadow,
+              transform: `rotate(${-5 * (1 - q)}deg)`,
+            }}
+          >
+            <CreditCard size={36} color={r.purple} />
+            <div style={{ fontSize: 21, marginTop: 12 }}>Со своего счёта</div>
+          </div>
+          <div style={{ margin: "25px 0", fontSize: 23 }}>По контакту</div>
+          <div
+            style={{
+              padding: 14,
+              background: r.lime,
+              borderRadius: 15,
+              textAlign: "center",
+              fontSize: 24,
+            }}
+          >
+            {t < 3.35 ? "Перевести" : "Отправлено"}
+          </div>
+          <div style={{ display: "grid", placeItems: "center", marginTop: 12 }}>
+            <Done at={3.35} size={66} />
+          </div>
+        </div>
+        <Pointer x={180} y={324} t={t} at={3.08} />
+      </Interactive.Div>
+      <Interactive.Div
+        name="Карта входит в банкомат"
+        style={{
+          ...abs,
+          left: 710,
+          top: 425,
+          width: 112,
+          height: 242,
+          ...panel,
+          background: r.lilac,
+          opacity: atm,
+          transform: `translateY(${45 * (1 - atm)}px) perspective(900px) rotateY(-10deg)`,
+        }}
+      >
+        <div
+          style={{
+            margin: 16,
+            height: 77,
+            background: r.ink,
+            borderRadius: 8,
+            display: "grid",
+            placeItems: "center",
           }}
         >
-          <Paperclip size={23} />
-          Текст видео
+          <Check
+            size={34}
+            color={r.lime}
+            style={{ opacity: ramp(t, 4.65, 4.9) }}
+          />
         </div>
-        <div style={{ padding: "2px 26px", fontSize: 30, lineHeight: 1.5 }}>
-          <div style={{ minHeight: 76 }}>
-            <Typed
-              text="Выдели три интересные мысли."
-              t={t}
-              start={0.75}
-              end={2.2}
+        <div
+          style={{
+            margin: "24px 13px",
+            height: 7,
+            borderRadius: 5,
+            background: r.ink,
+            overflow: "visible",
+          }}
+        >
+          <div
+            style={{
+              width: 62,
+              height: 39,
+              background: r.purple,
+              border: `2px solid ${r.white}`,
+              borderRadius: 6,
+              transform: `translate(9px,${25 * (1 - ramp(t, 4.25, 4.65))}px) scaleY(${1 - 0.94 * ramp(t, 4.25, 4.65)})`,
+              transformOrigin: "top",
+              opacity: 1 - ramp(t, 4.65, 4.8),
+            }}
+          />
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3,1fr)",
+            gap: 5,
+            margin: 16,
+          }}
+        >
+          {Array.from({ length: 9 }, (_, i) => (
+            <div
+              key={i}
+              style={{ height: 11, background: r.white, borderRadius: 3 }}
             />
-          </div>
-          <div style={{ minHeight: 102 }}>
-            <Typed
-              text="Из одной — короткий сценарий. Из другой — карусель на 5 слайдов."
-              t={t}
-              start={2.65}
-              end={6.45}
-            />
-          </div>
-          <div style={{ marginTop: 20 }}>
-            <span style={{ background: t > 7.2 ? r.lime : "transparent" }}>
-              <Typed
-                text="Используй только информацию из текста."
-                t={t}
-                start={6.6}
-                end={8.2}
-              />
-            </span>
-          </div>
+          ))}
+        </div>
+      </Interactive.Div>
+    </Stage>
+  );
+};
+
+export const FutureCinemaReview = () => {
+  const t = time(),
+    show = ramp(t, 2.25, 2.65),
+    edited = ramp(t, 3.25, 3.7);
+  return (
+    <Stage>
+      <Heading>ЗАДАЧА → ПРОВЕРКА</Heading>
+      <Interactive.Div
+        name="Ввод и отправка задачи"
+        style={{
+          ...abs,
+          left: 65,
+          top: 430 - 240 * show,
+          width: 758,
+          height: 170,
+          ...panel,
+          padding: 25,
+          transform: `perspective(1500px) rotateX(${4 * (1 - show)}deg)`,
+        }}
+      >
+        <div style={{ display: "flex", gap: 12, fontSize: 23, color: r.muted }}>
+          <MessageCircle size={26} />
+          Задача
+        </div>
+        <div style={{ fontSize: 31, width: 610, marginTop: 20 }}>
+          <Typed
+            text="Сократи текст. Сохрани смысл."
+            t={t}
+            start={0.2}
+            end={2}
+          />
         </div>
         <div
           style={{
             ...abs,
             right: 22,
-            bottom: 22,
+            bottom: 25,
             padding: 13,
-            background: r.lime,
             borderRadius: 15,
-            display: "flex",
-            gap: 12,
-            alignItems: "center",
-            fontSize: 24,
+            background: r.lime,
           }}
         >
-          {t > 8.6 ? <Check size={27} /> : <Send size={27} />}
+          <Send size={26} />
         </div>
-        <Pointer x={705} y={430} t={t} at={8.35} />
+        <Pointer x={695} y={105} t={t} at={2.1} />
       </Interactive.Div>
-    </Stage>
-  );
-};
-
-export const FirstOrderDesign = () => {
-  const t = time(),
-    design = ease(t, 3, 3.75),
-    ready = ease(t, 6.05, 6.8),
-    edit = ease(t, 1.3, 2.3);
-  return (
-    <Stage>
-      <Heading>
-        {t < 3.3 ? "ПРОВЕРЯЕМ И ОФОРМЛЯЕМ" : "ГОТОВЫЙ КОМПЛЕКТ"}
-      </Heading>
+      {[2, 1].map((i) => (
+        <div
+          key={i}
+          style={{
+            ...abs,
+            left: 110 + i * 8,
+            top: 400 + i * 11,
+            width: 668,
+            height: 270,
+            ...surface,
+            background: r.lilac,
+            opacity: show,
+            transform: `rotate(${i * 1.8}deg)`,
+          }}
+        />
+      ))}
       <Interactive.Div
-        name="Правка черновика"
+        name="Документ — выделение и точечная правка"
         style={{
           ...abs,
-          left: 70,
-          top: 230,
-          width: 748,
-          height: 410,
+          left: 110,
+          top: 400,
+          width: 668,
+          height: 270,
           ...panel,
-          opacity: 1 - design,
-          transform: `perspective(1500px) rotateY(${-12 * design}deg) translateX(${-55 * design}px)`,
+          opacity: show,
+          transform: `translateY(${45 * (1 - show)}px) perspective(1500px) rotateX(${12 * (1 - show)}deg)`,
         }}
       >
-        <WindowBar label="Черновик карусели" icon={<FileText size={25} />} />
-        <div style={{ padding: 30, fontSize: 31, lineHeight: 1.5 }}>
+        <WindowBar
+          label={t > 3.9 ? "Проверено" : "Черновик"}
+          icon={t > 3.9 ? <Check size={25} /> : <FileText size={25} />}
+        />
+        <div style={{ padding: "24px 30px", fontSize: 31, lineHeight: 1.5 }}>
           <div
             style={{
-              height: 95 * (1 - edit),
+              height: 48 * (1 - edited),
               overflow: "hidden",
-              opacity: 1 - edit,
+              opacity: 1 - edited,
             }}
           >
             <span
               style={{
-                background: t > 1 ? r.lilac : "transparent",
-                textDecoration: t > 1.5 ? "line-through" : "none",
+                background: t > 2.85 ? r.lilac : "transparent",
+                textDecoration: t > 3.18 ? "line-through" : "none",
               }}
             >
-              В современном мире контент очень важен.
+              Очень важный совет:
             </span>
           </div>
-          <span style={{ background: t > 2.3 ? r.lime : "transparent" }}>
-            Из одного видео — Reels и карусель.
-          </span>
-        </div>
-        <Pointer x={320} y={135} t={t} at={1.15} />
-        <div style={{ ...abs, right: 30, bottom: 25 }}>
-          <Done at={2.35} />
-        </div>
-      </Interactive.Div>
-      <Interactive.Div
-        name="Редактор — текст становится слайдами"
-        style={{
-          ...abs,
-          left: 50,
-          top: 190,
-          width: 788,
-          height: 520,
-          ...panel,
-          opacity: design,
-          overflow: "hidden",
-          transform: `perspective(1600px) rotateY(${7 * (1 - design)}deg) scale(${1 - 0.08 * ready})`,
-        }}
-      >
-        <WindowBar label="Карусель" icon={<LayoutGrid size={26} />} />
-        <div
-          style={{
-            ...abs,
-            left: 25,
-            top: 90,
-            width: 205,
-            fontSize: 24,
-            lineHeight: 1.45,
-          }}
-        >
-          <div style={{ fontSize: 21, color: r.muted, marginBottom: 15 }}>
-            Текст слайда
-          </div>
-          <span style={{ background: t < 4.2 ? r.lilac : "transparent" }}>
-            Проверь текст.
-            <br />
-            Убери общие фразы.
-          </span>
-          <div
-            style={{
-              marginTop: 35,
-              padding: 14,
-              borderRadius: 13,
-              background: r.lime,
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <Check size={25} />
-            Сохранено
+          <div style={{ transform: `translateY(${8 * edited}px)` }}>
+            <span style={{ background: t > 3.75 ? r.lime : "transparent" }}>
+              Начни с вопроса аудитории.
+            </span>
           </div>
         </div>
-        <div
-          style={{
-            ...abs,
-            left: 310,
-            top: 82,
-            width: 240,
-            height: 300,
-            transform: `rotate(${-4 * (1 - ease(t, 3.5, 4.3))}deg)`,
-          }}
-        >
-          <Slide i={t < 4.6 ? 0 : t < 5.3 ? 1 : 2} />
+        <Pointer x={300} y={100} t={t} at={2.92} />
+        <div style={{ ...abs, right: 25, bottom: 15 }}>
+          <Done at={3.85} size={58} />
         </div>
-        <div
-          style={{
-            ...abs,
-            left: 26,
-            right: 26,
-            bottom: 20,
-            display: "flex",
-            gap: 12,
-            justifyContent: "center",
-          }}
-        >
-          {[0, 1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              style={{
-                width: 105,
-                height: 110,
-                boxShadow: c.objectShadow,
-                ...enter(t, 3.6 + i * 0.25),
-              }}
-            >
-              <Slide i={i} mini />
-            </div>
-          ))}
-        </div>
-      </Interactive.Div>
-      <Interactive.Div
-        name="Сценарий рядом с готовой каруселью"
-        style={{
-          ...abs,
-          left: 615,
-          top: 270,
-          width: 200,
-          height: 300,
-          ...panel,
-          padding: 20,
-          opacity: ready,
-          transform: `translateX(${40 * (1 - ready)}px) rotate(6deg)`,
-        }}
-      >
-        <Film size={34} color={r.purple} />
-        <div style={{ fontSize: 26, marginTop: 18, fontWeight: 800 }}>
-          Сценарий Reels
-        </div>
-        <div style={{ fontSize: 23, lineHeight: 1.4, marginTop: 18 }}>
-          Одно видео.
-          <br />
-          Два формата.
-          <br />
-          Одна мысль.
-        </div>
-        <Check size={30} style={{ marginTop: 22 }} color={r.purple} />
       </Interactive.Div>
     </Stage>
   );
 };
 
-export const FirstOrderMessage = () => {
+const Wave = ({ t, compact = false }: { t: number; compact?: boolean }) => (
+  <svg viewBox="0 0 520 44" width="100%" height={compact ? 30 : 44}>
+    {Array.from({ length: 90 }, (_, i) => {
+      const h = 5 + 31 * Math.abs(Math.sin(i * 1.72) * Math.cos(i * 0.24));
+      return (
+        <rect
+          key={i}
+          x={i * 5.75}
+          y={(44 - h) / 2}
+          width={3.3}
+          height={h}
+          rx={1.5}
+          fill={i / 90 < linear(t, 0, 3) ? r.purple : r.line}
+        />
+      );
+    })}
+  </svg>
+);
+
+export const FutureCinemaContent = () => {
   const t = time(),
-    sent = ease(t, 6.9, 7.4),
-    show = ease(t, 7.4, 8.1);
+    fan = ramp(t, 0.35, 1.3),
+    scatter = ramp(t, 1.6, 2.45),
+    assembly = ramp(t, 2.6, 3.25),
+    phone = ramp(t, 5.25, 5.95),
+    push = ramp(t, 6.9, 8.5);
+  const tiles = [
+    { x: 105, y: 220, rot: -12, I: FileText, label: "Сценарий" },
+    { x: 580, y: 200, rot: 10, I: Captions, label: "Субтитры" },
+    { x: 70, y: 490, rot: -6, I: Volume2, label: "Звук" },
+    { x: 590, y: 490, rot: 12, I: Scissors, label: "Монтаж" },
+  ];
   return (
     <Stage>
-      <Heading>ПОКАЖИ ПОЛЬЗУ СРАЗУ</Heading>
-      <Interactive.Div
-        name="Сообщение автору — без выдуманного ответа"
+      <Heading>ОТ ИДЕИ ДО РОЛИКА</Heading>
+      <div
         style={{
           ...abs,
-          left: 60,
-          top: 210,
-          width: 768,
-          height: 480,
-          ...panel,
-          overflow: "hidden",
-          transform: `perspective(1500px) rotateY(${-4 * show}deg)`,
+          inset: 0,
+          perspective: c.perspective,
+          opacity: 1 - ramp(t, 3.05, 3.35),
         }}
       >
-        <WindowBar label="Автор видео" icon={<UserRound size={25} />} />
-        <div
+        <Interactive.Div
+          name="Исходный кадр — центр коллажа"
           style={{
-            margin: 24,
-            padding: 24,
-            borderRadius: 20,
-            background: r.lilac,
-            fontSize: 30,
-            lineHeight: 1.4,
-            transform: `translateY(${-12 * sent}px)`,
+            ...abs,
+            left: mix(310, 573, assembly),
+            top: mix(210, 263, assembly),
+            width: mix(268, 240, assembly),
+            height: mix(425, 245, assembly),
+            borderRadius: 25,
+            overflow: "hidden",
+            boxShadow: c.objectShadow,
+            transform: `scale(${1 - 0.15 * scatter + 0.1 * assembly}) rotateY(${-6 * fan}deg)`,
+            zIndex: 2,
           }}
         >
-          <Typed text="Посмотрел ваше видео." t={t} start={1.5} end={2.7} />
-          <br />
-          <Typed
-            text="Подготовил карусель и сценарий Reels на его основе."
-            t={t}
-            start={3.1}
-            end={5.9}
-          />
-          <br />
-          <span style={{ background: t > 6.7 ? r.lime : "transparent" }}>
-            <Typed text="Прислать?" t={t} start={6.1} end={6.7} />
-          </span>
+          <Footage />
+        </Interactive.Div>
+        {tiles.map(({ x, y, rot, I, label }, i) => {
+          const a = ramp(t, 0.3 + i * 0.15, 0.85 + i * 0.15),
+            q = scatter * (1 - assembly);
+          return (
+            <Interactive.Div
+              key={label}
+              name={`Слой ${label} в коллаже`}
+              style={{
+                ...abs,
+                left: mix(
+                  mix(330, x, a) + (x < 300 ? -35 : 35) * q,
+                  75 + i * 140,
+                  assembly,
+                ),
+                top: mix(mix(340, y, a), 510 + i * 30, assembly),
+                width: mix(218, 180, assembly),
+                height: mix(165, 46, assembly),
+                ...panel,
+                padding: 20,
+                zIndex: i < 2 ? 1 : 4,
+                opacity: a * (1 - assembly),
+                transform: `rotate(${rot * a * (1 - assembly)}deg) scale(${1 + 0.2 * q}) translateY(${-25 * q}px)`,
+                filter: `blur(${1.8 * Math.sin(q * Math.PI)}px)`,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  fontSize: 23,
+                }}
+              >
+                <I size={26} color={r.purple} />
+                {label}
+              </div>
+              {i === 0 ? (
+                <div style={{ fontSize: 24, lineHeight: 1.3, marginTop: 13 }}>
+                  Мир через
+                  <br />
+                  <b>10 лет</b>
+                </div>
+              ) : i === 1 ? (
+                <div
+                  style={{
+                    background: r.lime,
+                    padding: 10,
+                    fontSize: 22,
+                    marginTop: 16,
+                    borderRadius: 9,
+                  }}
+                >
+                  Что изменится?
+                </div>
+              ) : i === 2 ? (
+                <div style={{ marginTop: 25 }}>
+                  <Wave t={t} compact />
+                </div>
+              ) : (
+                <div style={{ display: "flex", gap: 5, marginTop: 23 }}>
+                  {[0, 1, 2].map((j) => (
+                    <div
+                      key={j}
+                      style={{
+                        width: 48,
+                        height: 44,
+                        borderRadius: 7,
+                        background: j === 1 ? r.purple : r.lilac,
+                        border: `1px solid ${r.line}`,
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+            </Interactive.Div>
+          );
+        })}
+      </div>
+      <Interactive.Div
+        name="Слои собираются в редактор"
+        style={{
+          ...abs,
+          left: 48,
+          top: 185,
+          width: 792,
+          height: 510,
+          ...panel,
+          opacity: ramp(t, 2.8, 3.25) * (1 - phone),
+          overflow: "hidden",
+          transform: `perspective(1700px) rotateX(${15 * (1 - assembly)}deg) rotateY(${-12 * phone}deg) scale(${0.88 + 0.12 * assembly - 0.13 * phone})`,
+        }}
+      >
+        <WindowBar label="Мой ролик" icon={<Scissors size={26} />} />
+        <div
+          style={{
+            ...abs,
+            left: 27,
+            top: 79,
+            width: 410,
+            fontSize: 30,
+            lineHeight: 1.35,
+          }}
+        >
+          <span style={{ color: r.muted, fontSize: 21 }}>Сценарий</span>
+          <div style={{ marginTop: 15 }}>
+            <Typed
+              text="Что изменится через 10 лет?"
+              t={t}
+              start={3.1}
+              end={3.7}
+            />
+          </div>
+          <div
+            style={{
+              marginTop: 18,
+              fontSize: 23,
+              color: r.purple,
+              opacity: ramp(t, 3.7, 3.95),
+            }}
+          >
+            ИИ станет частью работы.
+          </div>
         </div>
         <div
           style={{
             ...abs,
-            right: 30,
+            right: 27,
+            top: 78,
+            width: 240,
+            height: 245,
+            borderRadius: 15,
+            overflow: "hidden",
+            background: r.ink,
+          }}
+        >
+          <Footage />
+          <div
+            style={{
+              ...abs,
+              bottom: 45,
+              width: "100%",
+              color: r.white,
+              fontSize: 19,
+              textAlign: "center",
+              textShadow: r.captionShadow,
+              opacity: ramp(t, 4.64, 4.9),
+            }}
+          >
+            МИР ЧЕРЕЗ 10 ЛЕТ
+          </div>
+        </div>
+        <div style={{ ...abs, left: 26, top: 346, right: 26 }}>
+          <div style={{ display: "flex", gap: 7 }}>
+            {[0, 1, 2, 3].map((i) => (
+              <div
+                key={i}
+                style={{
+                  width: 177,
+                  height: 42,
+                  background: i % 2 ? r.lilac : r.purple,
+                  borderRadius: 8,
+                  border: `1px solid ${r.line}`,
+                  transform: `translateX(${(i + 1) * 22 * (1 - ramp(t, 4.02, 4.38))}px)`,
+                  opacity: ramp(t, 3.95 + i * 0.06, 4.12 + i * 0.06),
+                  display: "grid",
+                  placeItems: "center",
+                }}
+              >
+                <Play size={21} color={i % 2 ? r.purple : r.white} />
+              </div>
+            ))}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              marginTop: 8,
+              opacity: ramp(t, 4.64, 4.9),
+            }}
+          >
+            {["Мир", "через", "10 лет"].map((s) => (
+              <div
+                key={s}
+                style={{
+                  background: r.lime,
+                  borderRadius: 6,
+                  padding: "4px 20px",
+                  fontSize: 20,
+                }}
+              >
+                {s}
+              </div>
+            ))}
+          </div>
+          <Wave t={t - 4} compact />
+          <div
+            style={{
+              ...abs,
+              top: -8,
+              bottom: 0,
+              width: 3,
+              left: 720 * linear(t, 4.1, 5.3),
+              background: r.ink,
+            }}
+          />
+        </div>
+      </Interactive.Div>
+      <Interactive.Div
+        name="Готовый ролик в телефоне — публикация и наезд"
+        style={{
+          ...abs,
+          left: 305 - 45 * push,
+          top: 170 - 10 * push,
+          width: 278 + 90 * push,
+          height: 530 + 50 * push,
+          background: r.ink,
+          border: `9px solid ${r.ink}`,
+          borderRadius: 42,
+          overflow: "hidden",
+          boxShadow: c.objectShadow,
+          opacity: phone,
+          transform: `perspective(1400px) rotateY(${17 * (1 - phone) - 3 * push}deg) translateY(${50 * (1 - phone)}px)`,
+        }}
+      >
+        <Footage />
+        <div
+          style={{
+            ...abs,
+            top: 0,
+            width: 100,
+            left: "50%",
+            translate: "-50%",
+            height: 17,
+            borderRadius: "0 0 14px 14px",
+            background: r.ink,
+          }}
+        />
+        <div
+          style={{
+            ...abs,
+            top: 50,
+            left: 15,
+            right: 15,
+            color: r.white,
+            textShadow: r.captionShadow,
+            fontFamily: r.titleFont,
+            fontSize: 25,
+            fontWeight: 900,
+            textAlign: "center",
+          }}
+        >
+          МИР ЧЕРЕЗ
+          <br />
+          10 ЛЕТ
+        </div>
+        <div
+          style={{
+            ...abs,
+            left: 14,
+            right: 14,
             bottom: 22,
+            padding: 14,
+            borderRadius: 16,
+            background: t > 6.4 ? r.lime : r.white,
+            textAlign: "center",
+            fontSize: 23,
             display: "flex",
-            gap: 12,
+            justifyContent: "center",
             alignItems: "center",
+            gap: 8,
+          }}
+        >
+          {t > 6.4 ? <Check size={24} /> : <Upload size={24} />}
+          {t > 6.4 ? "Опубликовано" : "Опубликовать"}
+        </div>
+        <Pointer x={200} y={438} t={t} at={6.15} />
+      </Interactive.Div>
+      <Interactive.Div
+        name="Автоматизация — связь с готовым роликом"
+        style={{
+          ...abs,
+          left: 100,
+          top: 350,
+          width: 120,
+          height: 120,
+          ...panel,
+          background: r.lilac,
+          display: "grid",
+          placeItems: "center",
+          opacity: ramp(t, 7.2, 7.6),
+          transform: `translateX(${25 * (1 - ramp(t, 7.2, 7.6))}px)`,
+        }}
+      >
+        <Bot size={60} color={r.purple} />
+      </Interactive.Div>
+      <svg width={888} height={800} style={{ ...abs, pointerEvents: "none" }}>
+        <path
+          d="M220 410 L260 410"
+          stroke={r.purple}
+          strokeWidth={4}
+          pathLength={1}
+          strokeDasharray={1}
+          strokeDashoffset={1 - ramp(t, 7.6, 8)}
+        />
+        <circle
+          cx={220 + 40 * ramp(t, 7.7, 8.2)}
+          cy={410}
+          r={5}
+          fill={r.purple}
+          opacity={ramp(t, 7.6, 7.8) * (1 - ramp(t, 8.1, 8.4))}
+        />
+      </svg>
+    </Stage>
+  );
+};
+
+export const FutureCinemaTypewriter = () => <FutureMotionTypewriter />;
+
+export const FutureCinemaLearning = () => {
+  const t = time(),
+    reply = ramp(t, 2.3, 2.9),
+    example = ramp(t, 5.3, 6),
+    final = ramp(t, 7.4, 8);
+  return (
+    <Stage>
+      <Heading>УЧИТЬСЯ НА ПРИМЕРЕ</Heading>
+      <Interactive.Div
+        name="Вопрос — ввод и отправка"
+        style={{
+          ...abs,
+          left: 60,
+          top: 265 - 95 * reply,
+          width: 768,
+          height: 150,
+          ...panel,
+          padding: 25,
+          transform: `perspective(1500px) rotateX(${6 * (1 - reply)}deg)`,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
             fontSize: 23,
             color: r.muted,
           }}
         >
-          {sent > 0.5 ? (
-            <>
-              <CheckCheck size={24} />
-              Отправлено
-            </>
-          ) : (
-            <div style={{ background: r.lime, padding: 12, borderRadius: 13 }}>
-              <Send size={27} />
-            </div>
-          )}
+          <MessageCircle size={24} />
+          Мой вопрос
         </div>
-        <Pointer x={695} y={390} t={t} at={6.85} />
-      </Interactive.Div>
-      <Interactive.Div
-        name="Подготовленный комплект — два материала"
-        style={{
-          ...abs,
-          left: 150,
-          top: 580,
-          width: 588,
-          height: 130,
-          ...panel,
-          padding: 22,
-          display: "flex",
-          gap: 24,
-          alignItems: "center",
-          opacity: show,
-          transform: `translateY(${35 * (1 - show)}px)`,
-        }}
-      >
-        <div style={{ background: r.lilac, padding: 16, borderRadius: 14 }}>
-          <Layers size={40} color={r.purple} />
-        </div>
-        <div style={{ fontSize: 29, lineHeight: 1.3 }}>
-          Карусель + Reels
-          <br />
-          <span style={{ fontSize: 22, color: r.muted }}>Из видео автора</span>
-        </div>
-      </Interactive.Div>
-    </Stage>
-  );
-};
-
-export const FirstOrderPortfolio = () => {
-  const t = time(),
-    portfolio = ease(t, 5.9, 6.7),
-    permission = ease(t, 7.1, 7.8),
-    publish = ease(t, 8.3, 9.3);
-  return (
-    <Stage>
-      <Heading>{t < 6 ? "СЛЕДУЮЩИЕ 5 ВИДЕО" : "СОБИРАЕМ ПОРТФОЛИО"}</Heading>
-      <div style={{ opacity: 1 - portfolio }}>
-        {[0, 1, 2, 3, 4].map((i) => (
-          <Interactive.Div
-            key={i}
-            name={`Комплект для видео ${i + 1}`}
-            style={{
-              ...abs,
-              left: 35 + i * 165,
-              top: mix(405, 295, ease(t, 1.5, 2.2)),
-              width: 155,
-              height: 340,
-              ...panel,
-              padding: 12,
-              ...enter(t, i * 0.07),
-            }}
-          >
-            <div style={{ height: 135 }}>
-              <VideoObject small />
-            </div>
-            <div
-              style={{
-                display: "grid",
-                placeItems: "center",
-                height: 55,
-                opacity: ease(t, 2 + i * 0.2, 2.4 + i * 0.2),
-              }}
-            >
-              <ArrowRight
-                size={27}
-                style={{ rotate: "90deg" }}
-                color={r.purple}
-              />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                gap: 8,
-                opacity: ease(t, 2.7 + i * 0.2, 3.1 + i * 0.2),
-              }}
-            >
-              <div
-                style={{
-                  width: 58,
-                  height: 80,
-                  background: r.lilac,
-                  borderRadius: 9,
-                  display: "grid",
-                  placeItems: "center",
-                }}
-              >
-                <Film size={27} color={r.purple} />
-              </div>
-              <div
-                style={{
-                  width: 58,
-                  height: 80,
-                  background: r.lime,
-                  borderRadius: 9,
-                  display: "grid",
-                  placeItems: "center",
-                }}
-              >
-                <Layers size={27} />
-              </div>
-            </div>
-            <div
-              style={{
-                fontSize: 21,
-                textAlign: "center",
-                marginTop: 18,
-                opacity: ease(t, 3.8 + i * 0.13, 4.1 + i * 0.13),
-              }}
-            >
-              Комплект {i + 1}
-            </div>
-          </Interactive.Div>
-        ))}
-      </div>
-      <Interactive.Div
-        name="Разрешение клиента — условие публикации"
-        style={{
-          ...abs,
-          left: 145,
-          top: 235,
-          width: 598,
-          height: 120,
-          ...panel,
-          padding: 24,
-          display: "flex",
-          alignItems: "center",
-          gap: 20,
-          opacity: portfolio,
-          transform: `translateY(${35 * (1 - portfolio)}px)`,
-        }}
-      >
-        <LockKeyhole size={42} color={r.purple} />
-        <div style={{ fontSize: 29, lineHeight: 1.3 }}>
-          Только с разрешения
-          <br />
-          клиента
-        </div>
-        <Check
-          size={34}
-          color={r.purple}
-          style={{ marginLeft: "auto", opacity: permission }}
-        />
-      </Interactive.Div>
-      <Interactive.Div
-        name="Работы собираются в папку портфолио"
-        style={{
-          ...abs,
-          left: 90,
-          top: 405,
-          width: 708,
-          height: 300,
-          ...panel,
-          opacity: portfolio,
-          padding: 25,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            gap: 14,
-            alignItems: "center",
-            fontSize: 30,
-          }}
-        >
-          <FolderOpen color={r.purple} size={38} />
-          Портфолио
-        </div>
-        <div style={{ display: "flex", gap: 18, marginTop: 25 }}>
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              style={{
-                width: 200,
-                height: 155,
-                ...surface,
-                padding: 16,
-                background: i === 1 ? r.lilac : r.paper,
-                opacity: ease(t, 8 + i * 0.3, 8.4 + i * 0.3),
-                transform: `translateY(${-70 * (1 - ease(t, 8 + i * 0.3, 8.7 + i * 0.3))}px) rotate(${(i - 1) * 5 * (1 - publish)}deg)`,
-              }}
-            >
-              {i === 1 ? (
-                <Layers size={42} color={r.purple} />
-              ) : (
-                <Film size={42} color={r.purple} />
-              )}
-              <div style={{ fontSize: 23, marginTop: 17 }}>
-                {i === 1 ? "Карусель" : "Reels"}
-              </div>
-              <Check size={22} style={{ float: "right", opacity: publish }} />
-            </div>
-          ))}
-        </div>
-      </Interactive.Div>
-    </Stage>
-  );
-};
-
-export const FirstOrderCTA = () => {
-  const t = time(),
-    sent = ease(t, 1.65, 2.15),
-    pack = ease(t, 2.8, 3.5);
-  return (
-    <Stage>
-      <Heading>ПОДБОРКА ИИ-ИНСТРУМЕНТОВ</Heading>
-      <Interactive.Div
-        name="Кодовое слово в комментарии"
-        style={{
-          ...abs,
-          left: 90,
-          top: 370,
-          width: 708,
-          height: 185,
-          ...panel,
-          padding: 28,
-          transform: `translateY(${-150 * pack}px)`,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 14,
-            fontSize: 25,
-            color: r.muted,
-          }}
-        >
-          <MessageCircle size={26} />
-          Комментарий
-        </div>
-        <div
-          style={{
-            fontFamily: r.titleFont,
-            fontWeight: 900,
-            fontSize: 62,
-            marginTop: 15,
-          }}
-        >
-          <Typed text="ПАК" t={t} start={0.3} end={1.05} />
+        <div style={{ marginTop: 17, fontSize: 30, width: 640 }}>
+          <Typed
+            text="Как создавать контент для соцсетей?"
+            t={t}
+            start={0.35}
+            end={1.8}
+          />
         </div>
         <div
           style={{
             ...abs,
-            right: 28,
-            bottom: 28,
+            right: 20,
+            bottom: 20,
+            padding: 12,
+            borderRadius: 14,
             background: r.lime,
-            borderRadius: 17,
-            padding: 16,
           }}
         >
-          {sent > 0.7 ? <Check size={30} /> : <Send size={30} />}
+          <Send size={25} />
         </div>
-        <Pointer x={630} y={110} t={t} at={1.6} />
+        <Pointer x={705} y={95} t={t} at={2} />
       </Interactive.Div>
       <Interactive.Div
-        name="Подборка — инструменты для видео и каруселей"
+        name="Ответ развивается по шагам"
         style={{
           ...abs,
-          left: 100,
-          top: 490,
-          width: 688,
-          height: 215,
+          left: 75,
+          top: 350,
+          width: 738,
+          height: 280 - 70 * example,
           ...panel,
-          background: r.lilac,
-          opacity: pack,
-          transform: `perspective(1400px) rotateX(${10 * (1 - pack)}deg) translateY(${35 * (1 - pack)}px)`,
-          padding: 30,
+          opacity: reply,
+          transform: `translateY(${35 * (1 - reply)}px)`,
+        }}
+      >
+        <WindowBar
+          label="Разберём на одном посте"
+          icon={<Sparkles size={25} color={r.purple} />}
+        />
+        <div style={{ padding: "20px 25px", fontSize: 30, lineHeight: 1.4 }}>
+          <div>
+            <span style={{ background: t > 3.5 ? r.lime : "transparent" }}>
+              <Typed
+                text="Выбери вопрос аудитории."
+                t={t}
+                start={2.65}
+                end={3.5}
+              />
+            </span>
+          </div>
+          <div style={{ marginTop: 10 }}>
+            <Typed
+              text="Дай ответ и покажи пример."
+              t={t}
+              start={3.65}
+              end={4.55}
+            />
+          </div>
+        </div>
+      </Interactive.Div>
+      {[2, 1].map((i) => (
+        <div
+          key={i}
+          style={{
+            ...abs,
+            left: 105 + i * 9,
+            top: 585 + i * 6,
+            width: 678,
+            height: 170,
+            ...surface,
+            background: r.lilac,
+            opacity: example,
+            transform: `rotate(${i * 1.1 * (1 - final)}deg)`,
+          }}
+        />
+      ))}
+      <Interactive.Div
+        name="Из объяснения собирается конкретный пост"
+        style={{
+          ...abs,
+          left: 105,
+          top: 585,
+          width: 678,
+          height: 170,
+          ...panel,
+          opacity: example,
+          padding: 22,
+          transform: `perspective(1600px) rotateX(${12 * (1 - example)}deg) translateY(${35 * (1 - example)}px)`,
         }}
       >
         <div
           style={{
             display: "flex",
+            gap: 12,
             alignItems: "center",
-            gap: 14,
             fontSize: 29,
+            fontWeight: 800,
           }}
         >
-          <FolderOpen size={39} color={r.purple} />
-          Твой набор для контента
+          <FileText size={27} color={r.purple} />
+          <Typed text="Как написать пост с ИИ?" t={t} start={5.6} end={6.4} />
         </div>
-        <div style={{ display: "flex", gap: 18, marginTop: 25 }}>
-          {[
-            { I: Film, s: "Reels" },
-            { I: Layers, s: "Карусели" },
-            { I: Captions, s: "Текст" },
-          ].map(({ I, s }, i) => (
-            <div
-              key={s}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                background: r.white,
-                padding: "16px 18px",
-                borderRadius: 15,
-                fontSize: 24,
-                ...enter(t, 3.7 + i * 0.45),
-              }}
-            >
-              <I size={27} color={r.purple} />
-              {s}
-            </div>
-          ))}
+        <div style={{ marginTop: 13, fontSize: 25, lineHeight: 1.35 }}>
+          <Typed text="Укажи тему и аудиторию." t={t} start={6.45} end={7.3} />
+          <br />
+          <Typed
+            text="Добавь свой пример в черновик."
+            t={t}
+            start={7.45}
+            end={8.55}
+          />
+        </div>
+        <div style={{ ...abs, right: 20, top: 95 }}>
+          <Done at={8.8} size={54} />
         </div>
       </Interactive.Div>
     </Stage>
