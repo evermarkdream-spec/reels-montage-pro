@@ -274,7 +274,10 @@ export const StudentPreview = () => {
         style={{
           position: "absolute",
           top: 1420,
-          fontSize: 64,
+          left: 100,
+          width: 880,
+          textAlign: "center",
+          fontSize: 38,
           fontWeight: 700,
         }}
       >
