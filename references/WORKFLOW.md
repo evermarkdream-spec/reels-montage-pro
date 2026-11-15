@@ -47,10 +47,12 @@ python scripts/setup.py
 
 Сначала проверить голос и пики. Исходный processVoice=false. Изменять голос только после оценки проблемы; не переносить усиление эталона механически. При необходимости выбирать gain с запасом пиков и записывать его в REVIEW.md.
 
+Рекомендуемый старт подложки: gap 18 dB, fade-in 0.45 с, fade-out 0.8 с; дальше по реальному миксу.
+
 В комплекте есть разрешённый instrumental public/music/the-child.mp3. Можно выбрать другой трек, подходящий смыслу. Для подготовки:
 
 ```bash
-.venv/bin/python scripts/prepare-music-bed.py --music public/music/the-child.mp3 --voice public/projects/ID/voice-edited.wav --gap-db 16 --duck-ratio 2.5 --fade-in 0.6 --fade-out 1.2 --out public/projects/ID/music-prepared.wav --preview-out out/music-preview.wav
+.venv/bin/python scripts/prepare-music-bed.py --music public/music/the-child.mp3 --voice public/projects/ID/voice-edited.wav --gap-db 18 --duck-ratio 2.5 --fade-in 0.45 --fade-out 0.8 --out public/projects/ID/music-prepared.wav --preview-out out/music-preview.wav
 ```
 
 --voice-gain-db должен соответствовать действительному усилению голоса в JSX; по умолчанию 0. Для трека короче видео требуется другой фрагмент или явно выбранная петля; скрипт не зацикливает его молча. Готовый music-prepared.wav содержит только музыку. Подключить отдельным Audio volume={1} на длительность ролика. preview.wav — контрольный микс, его не подключать вместе с тем же голосом.
