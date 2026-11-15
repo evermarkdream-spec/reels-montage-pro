@@ -6,7 +6,7 @@ import shutil
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
-FILES = ("SKILL.md", "STUDENT_GUIDE.md", "START_HERE.html", "CREDITS.md")
+FILES = ("SKILL.md", "STUDENT_GUIDE.md", "START_HERE.html", "CREDITS.md", "README.md", "AGENTS.md", "CLAUDE.md")
 DIRECTORIES = ("agents", "assets", "references", "scripts")
 
 
