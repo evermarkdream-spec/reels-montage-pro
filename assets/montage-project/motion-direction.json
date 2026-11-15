@@ -11,7 +11,10 @@
     "assets",
     "layout"
   ],
-  "beatSpacingSeconds": [0.5, 1.0],
+  "beatSpacingSeconds": [
+    0.5,
+    1.0
+  ],
   "allowReadingHold": true,
   "background": {
     "grid": false,
@@ -25,11 +28,16 @@
   },
   "palette": "cream/lilac/black/lime; latestRef tokens",
   "fallback": "camera-with-motivated-zoom",
-  "sound": { "trigger": "meaningful-action-only", "voicePriority": true },
+  "sound": {
+    "trigger": "meaningful-action-only",
+    "voicePriority": true
+  },
   "cta": "only-from-source-or-explicit-student-request",
   "objectContinuity": true,
   "resultAfterAction": true,
   "onePrimaryActionAtATime": true,
   "sceneOpening": "show-the-main-object-immediately; no empty first half-second while speech continues",
-  "depthHook": "optional; calculate occlusion from the current source and actual camera transform; never reuse the reference matte"
+  "depthHook": "optional; calculate occlusion from the current source and actual camera transform; never reuse the reference matte",
+  "material": "realistic white-purple objects; native proportions; layered edges and subtle reflections; no cartoon mascots",
+  "activeStyle": "future-ai-cinema"
 }

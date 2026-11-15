@@ -7,7 +7,7 @@
   "minimumKeepSeconds": 0.3,
   "silenceThresholdMode": "auto",
   "silenceThresholdRatio": 0.35,
-  "captionWords": 1,
+  "captionWords": 2,
   "captionFont": "Onest",
   "captionSize": 64,
   "captionWeight": 700,
@@ -72,12 +72,19 @@
     "enabled": true,
     "voicePriority": true,
     "defaultSelection": "instrumental; select by scenario and permitted file",
-    "baseGapDb": 16,
+    "baseGapDb": 18,
     "duckRatio": 2.5,
     "duckAttackMs": 20,
     "duckReleaseMs": 350,
-    "fadeInSeconds": 0.6,
-    "fadeOutSeconds": 1.2,
+    "fadeInSeconds": 0.45,
+    "fadeOutSeconds": 0.8,
     "preparedTrackVolume": 1
+  },
+  "activeStyle": {
+    "name": "future-ai-cinema",
+    "acceptedOn": "2026-11-13",
+    "reviewedOn": "2026-11-15",
+    "reference": "bundled assets/reference/last-reel.mp4",
+    "timing": "derive-from-current-source"
   }
 }

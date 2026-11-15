@@ -1,7 +1,7 @@
 import { Img, Interactive, staticFile, useCurrentFrame } from "remotion";
 import { latestRef as r, depthHook as d } from "../../scenes/tokens";
 import { ease, linear } from "./MotionNovKit";
-
+const assets = "projects/future-ref8-research/assets/";
 const SolidText = ({
   text,
   color,
@@ -54,16 +54,16 @@ const SolidText = ({
     </div>
   </div>
 );
-export const FirstOrderHook = () => {
+export const DepthHookNov = () => {
   const f = useCurrentFrame(),
     t = f / 25;
-  if (f >= 160) return null;
+  if (f >= d.durationFrames) return null;
   const mask = staticFile(
-    `test-order-nov5/occlusion/bg-${String(f).padStart(3, "0")}.png`,
+    `YOUR_SOURCE_MATTES/occlusion/bg-${String(f).padStart(3, "0")}.png`,
   );
   const q = ease(t, 0, 0.65),
-    leave = 1 - ease(t, 6.0, 6.4),
-    drift = linear(t, 0.65, 6.0);
+    leave = 1 - ease(t, 4.25, 4.64),
+    drift = linear(t, 0.65, 4.25);
   return (
     <>
       <Img
@@ -79,7 +79,7 @@ export const FirstOrderHook = () => {
       <Interactive.Div
         name="Хук • за силуэтом автора"
         from={0}
-        durationInFrames={160}
+        durationInFrames={116}
         style={{
           position: "absolute",
           inset: 0,
@@ -100,9 +100,9 @@ export const FirstOrderHook = () => {
           name="Хук • объёмный заголовок"
           style={{
             position: "absolute",
-            top: 235,
-            left: 96,
-            width: 650,
+            top: 222,
+            left: 95,
+            width: 890,
             textAlign: "center",
             transformStyle: "preserve-3d",
             transform: `translate3d(${-26 * (1 - q) + 8 * drift}px,${28 * (1 - q) - 4 * drift}px,${-160 * (1 - q)}px) rotateX(${9 - 5 * q}deg) rotateY(${-13 + 10 * q + 4 * drift}deg)`,
@@ -121,12 +121,49 @@ export const FirstOrderHook = () => {
               marginBottom: 14,
             }}
           >
-            КОНТЕНТ С ПОМОЩЬЮ ИИ
+            4 ПРОГНОЗА ОБ ИИ
           </div>
-          <SolidText text="ПЕРВЫЙ" color={r.white} size={82} />
+          <SolidText text="МИР ЧЕРЕЗ" color={r.white} size={78} />
           <div style={{ marginTop: 4 }}>
-            <SolidText text="ЗАКАЗ" color={r.lime} size={112} />
+            <SolidText text="10 ЛЕТ" color={r.lime} size={134} />
           </div>
+        </Interactive.Div>
+        <Interactive.Div
+          name="Хук • предметы в глубине"
+          style={{
+            position: "absolute",
+            left: 100,
+            top: 335,
+            width: 880,
+            height: 140,
+            opacity: ease(t, 0.2, 0.6),
+            transformStyle: "preserve-3d",
+          }}
+        >
+          <Img
+            src={staticFile(assets + "brain.png")}
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 0,
+              width: 94,
+              height: 94,
+              transform: `translateZ(-55px) rotateY(${12 - 8 * q}deg) rotateZ(-9deg)`,
+              filter: `drop-shadow(${d.shadow})`,
+            }}
+          />
+          <Img
+            src={staticFile(assets + "robot.png")}
+            style={{
+              position: "absolute",
+              right: 0,
+              top: 8,
+              width: 94,
+              height: 94,
+              transform: `translateZ(-85px) rotateY(${-16 + 8 * q}deg) rotateZ(8deg)`,
+              filter: `drop-shadow(${d.shadow})`,
+            }}
+          />
         </Interactive.Div>
       </Interactive.Div>
     </>
